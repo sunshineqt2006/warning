@@ -9,7 +9,7 @@ module.exports = {
         baseUrl:'/api',
         proxyTable: {
             '/api': {
-                target: "http://preopen.zmaxfilm.com/WarningApi/",
+                target: "http://warning.zmaxfilm.net/WarningApi/",
                 changeOrigin: true,
                 pathRewrite: {
                     '^/api': ''
