@@ -15,7 +15,7 @@ const router = new VueRouter({
     { path: '/SelectCinema',name:'SelectCinema',meta: { title: "选择影院" }, component: SelectCinema},
     { path: '/Detail',name:'Detail',meta: { title: "预警详情" }, component: Detail},
     { path: '/List',name:'List',meta: { title: "预警列表" }, component: List},
-    { path: '/*', redirect: '/List'}
+    { path: '/*', redirect: '/SelectCinema'}
   ]
 })
 

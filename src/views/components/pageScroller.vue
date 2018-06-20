@@ -2,12 +2,11 @@
     <scroller lock-x scrollbar-y :bounce='true' :height='height' :usePullup='usePullup' :usePulldown='usePulldown' @on-pullup-loading='getMore' @on-pulldown-loading='refresh' :pullup-config='pullUpConfig' :pulldown-config='pullDownConfig' v-model='status' ref='scroller'>
         <div>
             <slot></slot>
-            <div class="f14 color04 mt5" v-show='showNoMore' flex='dir:top cross:center'>{{noMoreText}}
-                <div class="line5"></div>
+            <div class="center" v-show='showNoMore'>{{noMoreText}}
             </div>
-            <div class="no-record" v-show='showNoRecord&&noRecordText' flex='dir:top cross:center main:center'>
+            <div class="no-record center" v-show='showNoRecord&&noRecordText'>
                 <div class="img" v-if='noRecordImage'></div>
-                <div class="f14 color04 mt10">{{noRecordText}}</div>
+                <div>{{noRecordText}}</div>
             </div>
         </div>
     </scroller>
@@ -19,7 +18,7 @@ export default {
         api: Function,
         initQuery: {
             type: Boolean,
-            default: true
+            default: false
         },
         height: String,
         pageSize: {
@@ -36,7 +35,7 @@ export default {
         },
         noMoreText: {
             type: String,
-            default: '没有更多数据'
+            default: '没有更多'
         },
         noRecordText: {
             type: String,
@@ -57,14 +56,15 @@ export default {
                 pulldownStatus: ''
             },
             showNoMore: false,
-            showNoRecord: true,
+            showNoRecord: false,
             page: {
                 number: 1,
-                totalElements:0,
-                allElements:0
+                totalPages: 0,
+                totalElements: -1,
+                size: 10
             },
             pullUpConfig: {
-                content: '',
+                content: '上拉可以刷新',
                 pullUpHeight: 60,
                 height: 40,
                 autoRefresh: false,
@@ -88,8 +88,8 @@ export default {
     watch: {
         page: {
             handler: function (val, oldVal) {
-                this.showNoRecord = val.allElements <= 0;
-                if (val.totalElements<10) {
+                this.showNoRecord = val.totalElements <= 0
+                if (val.number >= val.totalPages - 1) {
                     this.usePullup && (this.status.pullupStatus = 'disabled')
                 } else {
                     this.usePullup && (this.status.pullupStatus = 'default')
@@ -112,58 +112,38 @@ export default {
         },
         reset() {
             this.page.number = 1
-            this.page.totalElements = 0
+            this.page.totalPages = 0
+            this.page.totalElements = -1
             this.$refs.scroller && this.$refs.scroller._xscroll && this.$refs.scroller.reset({
                 top: 0
             })
-            return this.initQuery && this.getDataByPage(this.page.number)
+            return this.getDataByPage(this.page.number)
         },
         getMore() {
             this.getDataByPage(++this.page.number)
         },
         refresh() {
-            this.page.allElements = 0
             return this.getDataByPage(1)
         },
         getDataByPage(page) {
-            page = (page >=1 ? page : this.page.number);
-            let api =this.api(page);
-            return api?api.then(res => {
-                var allElementss = 0
-                if(this.$util.isArray(res.list)){
-                    if(page==1){
-                        allElementss = res.list.length
-                    }else{
-                        allElementss=this.page.allElements+res.list.length
-                    }
-                }else{
-                    if(page==1){
-                        allElementss = res.data.length
-                    }else{
-                        allElementss=this.page.allElements+res.data.length
-                    }
-                }
-                res.page={
-                    number : page,
-                    totalElements : res.data.length,
-                    allElements : allElementss
-                }
+            page = page != undefined ? page : this.page.number
+            return this.api(page, this.page.size).then(res => {
                 this.renderPage(res.page)
-            }):null;
+            })
         }
     },
     mounted() {
         this.resize()
     },
     created() {
-        this.page.size = this.pageSize;
+        this.page.size = this.pageSize
         this.initQuery && this.getDataByPage(this.page.number)
     }
 }
 </script>
-<style lang="less" scoped>
+<style lang="less" >
+// @import '~style/variable';
 .xxs-plugin-pullup-container {
-    color: red;
     font-size: 14px;
     line-height: 40px;
 }
@@ -171,13 +151,14 @@ export default {
 .no-record {
     margin-top: 10px;
     width: 100%;
-    height: 500px;
+    position: absolute;
     .img {
-      background-size:contain !important;
-        height: 105px;
-      width: 88px;
-        margin-bottom: 20px;
-    //   background: url(../../assets/images/no_data.png) center;
+        // background-image: url('~static/image/mall/no_order@2x.png');
+        background-position: center bottom;
+        background-size: 100% 100%;
+        height: 76px;
+        width: 86px;
+        background-repeat: no-repeat;
     }
 }
 </style>

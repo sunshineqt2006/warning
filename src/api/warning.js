@@ -16,10 +16,11 @@ function getWarningMsg(setId,page,pageSize) {
     pageSize:pageSize?pageSize:5
   })
 }
-function readMsg(id,remark) {
+function readMsg(id,remark,status) {
   return apiHttp.post('/Weixin/readMsg',{
     id:id,
-    remark:remark
+    remark:remark,
+    status:status
   })
 }
 function getMsgInfo(id) {

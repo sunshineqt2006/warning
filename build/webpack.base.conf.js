@@ -30,6 +30,7 @@ let webpackConfig = {
       'assets': path.resolve('src', 'assets'), //资源目录 "~assets"
       'api': path.resolve('src', 'api'), //api请求目录 "api"
       'views': path.resolve('src', 'views'), //视图目录 "views"
+      'utils': path.resolve('src', 'utils'), //视图目录 "views"
     }
   },
   module: {
