@@ -26,11 +26,11 @@ let webpackConfig = {
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
       '@': resolve('src'),
-      'styles': path.resolve('src', 'styles'),
+      'style': path.resolve('src', 'style'),
       'assets': path.resolve('src', 'assets'), //资源目录 "~assets"
       'api': path.resolve('src', 'api'), //api请求目录 "api"
       'views': path.resolve('src', 'views'), //视图目录 "views"
-      'utils': path.resolve('src', 'utils'), //视图目录 "views"
+      'store': path.resolve('src', 'store'), //vuex strore
     }
   },
   module: {
